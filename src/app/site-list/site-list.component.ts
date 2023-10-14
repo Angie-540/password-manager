@@ -16,20 +16,44 @@ export class SiteListComponent {
   siteURL !: string;
   siteId !: string;
 
+  formState: string = " Add New"
+
+  isSuccess: boolean = false;
+  successMessage !: string;
+
   constructor(private passwordManagerService: PasswordManagerService) {
     this.loadSites();
   }
 
-  onSubmit(values:object) {
-    console.log(values);
-    this.passwordManagerService.addSite(values)
-    .then(() => {
-      console.log('Data save sucessfully');
+  showAlert(message: string) {
+    this.isSuccess = true;
+    this.successMessage = message;
+  }
 
-    })
-    .catch(err => {
-      console.log(err);
-    })
+  onSubmit(values:object) {
+    if(this.formState == "Add New") {
+      this.passwordManagerService.addSite(values)
+      .then(() => {
+        console.log('saved')
+        this.showAlert('Data Saved Successfully');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    }
+
+    else if ( this.formState == "Edit") {
+      this.passwordManagerService.updateSite(this.siteId, values)
+      .then(() => {
+        this.showAlert('Data Edited Successufully')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    }
+
+   
   }
 
   loadSites() {
@@ -38,7 +62,22 @@ export class SiteListComponent {
   }
 
   editSite(siteName: string, siteURL:string, siteImgURL:string, id:string) {
+    this.siteName = siteName;
+    this.siteURL = siteURL;
+    this.siteImgURL = siteImgURL;
+    this.siteId = id;
 
+    this.formState = "Edit"
+  }
+
+  deleteSite(id: string) {
+    this.passwordManagerService.deleteSite(id)
+    .then(() => {
+      this.showAlert('Data deleted successfully')
+    })
+    .catch(err => {
+      console.log(err);
+    })
 
   }
 

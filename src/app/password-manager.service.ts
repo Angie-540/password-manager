@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collectionData } from '@angular/fire/firestore';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+
 
 @Injectable({
   providedIn: 'root'
@@ -20,4 +21,18 @@ export class PasswordManagerService {
     return collectionData(dbInstance, {idField: 'id'})
 
   }
+
+  updateSite(id: string, data:object) {
+    const docInstance = doc(this.firestore, 'sites', id);
+    return updateDoc(docInstance, data);
+
+  }
+
+  deleteSite(id: string) {
+    const docInstance = doc(this.firestore, 'sites', id);
+    return  deleteDoc(docInstance);
+
+
+  }
+
 }
