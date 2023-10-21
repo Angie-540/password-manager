@@ -31,7 +31,7 @@ export class SiteListComponent {
   }
 
   onSubmit(values:object) {
-    if(this.formState == "Add New") {
+    if(this.formState = "Add New") {
       this.passwordManagerService.addSite(values)
       .then(() => {
         console.log('saved')
@@ -45,6 +45,7 @@ export class SiteListComponent {
     else if ( this.formState == "Edit") {
       this.passwordManagerService.updateSite(this.siteId, values)
       .then(() => {
+        console.log("data updated")
         this.showAlert('Data Edited Successufully')
       })
       .catch(err => {
@@ -52,7 +53,6 @@ export class SiteListComponent {
       })
 
     }
-
    
   }
 
