@@ -15,7 +15,7 @@ export class PasswordListComponent {
   siteURL !: string;
   siteImgURL !: string;
 
-  passwordList !: Observable<Array<any>>
+  passwordList !: Array<any>;
 
   email !: string;
   username !: string;
@@ -55,11 +55,12 @@ export class PasswordListComponent {
     this.password = '';
     this.formState = 'Add New';
     this.passwordId = '';
-
-
   }
 
-  onSubmit (values: object) {
+
+  onSubmit (values: any) {
+    const encryptedPassword = this.encryptPassword(values.password);
+    values.password = encryptedPassword;
     if(this.formState == 'Add New') {
       console.log(values);
       this.passwordManagerService.addPassword(values, this.siteId)
@@ -85,7 +86,10 @@ export class PasswordListComponent {
   }
 
   loadPasswords () {
-    this.passwordList = this.passwordManagerService.loadPasswords(this.siteId)
+   this.passwordManagerService.loadPasswords(this.siteId).subscribe(val => {
+    this.passwordList = val;
+
+   })
   }
 
   editPassword(email: string, username: string, password: string, passwordId: string) {
@@ -105,6 +109,24 @@ export class PasswordListComponent {
     .catch(err => {
       console.log(err);
     })
+  }
+
+  encryptPassword (password: string ){
+    const secretKey = '91166A593F8BC59F3A79FB8662A6C';
+    const encryptedPassword = AES.encrypt(password, secretKey).toString();
+    return encryptedPassword
+
+  }
+
+  decryptPassword (password: string ){
+    const secretKey = '91166A593F8BC59F3A79FB8662A6C';
+    const decPassword = AES.decrypt(password, secretKey).toString(enc.Utf8);
+    return decPassword;
+  }
+
+  onDecrypt(password: string, index:number) {
+   const decPassword = this.decryptPassword(password);
+   this.passwordList[index].password = decPassword;
 
   }
 
